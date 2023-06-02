@@ -35,6 +35,15 @@ impl TlsStream {
             state: State::Handshaking(accept),
         }
     }
+
+    /// Returns the remote address that this connection was received from.
+    pub fn remote_addr(&self) -> std::net::SocketAddr {
+        match self.state {
+            State::Handshaking(ref accept) => accept.get_ref().unwrap().remote_addr(),
+            State::Streaming(ref stream) => stream.get_ref().0.remote_addr(),
+        }
+        .clone()
+    }
 }
 
 impl AsyncRead for TlsStream {
